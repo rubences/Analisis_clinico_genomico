@@ -1,6 +1,14 @@
 # MUBIO06 · Actividad 2 · Análisis clínico genómico
 
+[![Genomic Workflow QA](https://github.com/rubences/Analisis_clinico_genomico/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rubences/Analisis_clinico_genomico/actions/workflows/ci.yml)
+
 Propuesta reproducible para realizar la actividad sobre **enfermedad de células falciformes** y el gen **HBB**, utilizando datos humanos de secuenciación pública y un flujo de trabajo en Galaxy.
+
+## Estado de validación
+
+La estructura del proyecto y sus controles automatizados están preparados y validados en CI. El flujo cubre los siete criterios de la rúbrica: búsqueda fenotípica, obtención de secuenciación, control de calidad, limpieza, alineamiento, llamado/documentación VCF y análisis de variantes.
+
+La evidencia final de Galaxy, ClinVar, ENA y VEP **no se simula**: debe obtenerse mediante ejecución real y sustituir los marcadores del informe antes de la entrega. Véase `docs/CIERRE_ENTREGA.md`.
 
 ## Caso de estudio
 
@@ -23,6 +31,7 @@ Es un caso especialmente adecuado para la rúbrica porque permite conectar de fo
 - `docs/PLAN_CAPTURAS.md`: lista exacta de evidencias que hay que capturar.
 - `docs/MATRIZ_RUBRICA.md`: trazabilidad completa de los 10 puntos.
 - `docs/RESULTADOS_ESPERADOS.md`: qué observar y cómo interpretarlo sin inventar métricas.
+- `docs/CIERRE_ENTREGA.md`: checklist de cierre previo a la entrega.
 - `config/analysis_manifest.json`: coordenadas, accesiones y decisiones de referencia.
 - `scripts/validate_vcf.py`: comprobación del VCF exportado.
 - `scripts/validate_vep.py`: comprobación de una tabla TSV exportada desde VEP.
@@ -38,9 +47,32 @@ Es un caso especialmente adecuado para la rúbrica porque permite conectar de fo
 6. Llamar variantes con FreeBayes (o bcftools) y revisar el VCF.
 7. Anotar el VCF con Ensembl VEP y priorizar variantes de HBB, verificando `rs334` si aparece en la ejecución real.
 
+## Cobertura de la rúbrica
+
+| Criterio | Peso | Cobertura del repositorio |
+|---|---:|---|
+| Búsqueda en bases fenotípicas | 10 % | ClinVar + NCBI Gene/OMIM |
+| Búsqueda de secuenciación | 10 % | ENA/SRA · `SRR29275383` |
+| Control de calidad | 20 % | FastQC + MultiQC pre-limpieza |
+| Limpieza | 10 % | fastp + QC post-limpieza |
+| Alineamiento | 15 % | BWA-MEM/BWA-MEM2 + BAM + métricas |
+| Llamado/documentación VCF | 15 % | FreeBayes/bcftools + VCF + validador |
+| Análisis de variantes | 20 % | Ensembl VEP + interpretación clínica |
+| **Total** | **100 %** | **Cobertura completa** |
+
 ## Evidencia académica
 
 El enunciado exige capturas de los pasos realizados. Este repositorio **no contiene capturas simuladas** ni métricas inventadas. Las cifras de FastQC, alineamiento, profundidad, genotipo y calidad de variantes deben proceder de la ejecución real en Galaxy.
+
+Antes de entregar el PDF final deben existir evidencias reales de:
+
+- búsqueda del fenotipo/gen;
+- búsqueda y selección de secuenciación humana en ENA;
+- QC inicial;
+- limpieza y QC posterior;
+- alineamiento y métricas;
+- VCF y llamado de variantes;
+- anotación/interpretación en VEP.
 
 ## Datos
 
@@ -50,6 +82,17 @@ No versionar los FASTQ ni BAM en GitHub. Los dos FASTQ de `SRR29275383` se puede
 https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR292/083/SRR29275383/SRR29275383_1.fastq.gz
 https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR292/083/SRR29275383/SRR29275383_2.fastq.gz
 ```
+
+## Validación automática
+
+GitHub Actions comprueba en cada `push` a `main` y en cada Pull Request que:
+
+- los scripts Python compilan;
+- `analysis_manifest.json` mantiene HBB, GRCh38 y la variante de referencia coherentes;
+- los entregables canónicos existen;
+- no se han versionado FASTQ, BAM o CRAM.
+
+Los validadores `validate_vcf.py` y `validate_vep.py` están preparados para aplicarse a los ficheros reales exportados del análisis.
 
 ## Referencias clave
 
