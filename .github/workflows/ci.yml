@@ -1,0 +1,46 @@
+name: Genomic Workflow QA
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  static-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate Python syntax
+        run: python -m py_compile scripts/*.py
+      - name: Validate analysis manifest
+        run: |
+          python - <<'PY'
+          import json
+          m=json.load(open('config/analysis_manifest.json', encoding='utf-8'))
+          assert m['gene']['symbol']=='HBB'
+          assert m['gene']['assembly']=='GRCh38.p14'
+          assert m['target_variant']['grch38']=={'chrom':'chr11','pos':5227002,'ref':'T','alt':'A'}
+          assert m['dataset']['run_accession']=='SRR29275383'
+          print('PASS: manifest coherente.')
+          PY
+      - name: Check canonical deliverables
+        run: |
+          test -f MUBIO06_Actividad2_Analisis_Clinico_Genomico_preparado.docx
+          test -f MUBIO06_Actividad2_Analisis_Clinico_Genomico_preparado.pdf
+          test -f docs/GALAXY_WORKFLOW.md
+          test -f docs/MATRIZ_RUBRICA.md
+          test -f docs/PLAN_CAPTURAS.md
+          echo 'PASS: estructura completa.'
+      - name: Ensure raw sequencing data is not committed
+        shell: bash
+        run: |
+          if git ls-files | grep -Ei '\.(fastq|fq|bam|cram)(\.gz)?$'; then
+            echo 'ERROR: no versionar datos de secuenciación crudos/alineados.'
+            exit 1
+          fi
+          echo 'PASS: sin FASTQ/BAM/CRAM versionados.'

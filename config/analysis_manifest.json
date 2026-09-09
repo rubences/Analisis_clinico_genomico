@@ -1,0 +1,62 @@
+{
+  "activity": "MUBIO06 Actividad 2 - Analisis clinico genomico",
+  "disease": "Enfermedad de celulas falciformes (drepanocitosis; Hb SS disease)",
+  "gene": {
+    "symbol": "HBB",
+    "name": "hemoglobin subunit beta",
+    "ncbi_gene_id": 3043,
+    "ensembl_gene": "ENSG00000244734",
+    "refseq_transcript": "NM_000518.5",
+    "assembly": "GRCh38.p14",
+    "chromosome": "chr11",
+    "gene_start": 5225464,
+    "gene_end": 5227071,
+    "strand": "-"
+  },
+  "target_variant": {
+    "dbsnp": "rs334",
+    "clinvar_variation_id": 15333,
+    "hgvs_c": "NM_000518.5:c.20A>T",
+    "hgvs_p": "NP_000509.1:p.Glu7Val",
+    "grch38": {
+      "chrom": "chr11",
+      "pos": 5227002,
+      "ref": "T",
+      "alt": "A"
+    },
+    "grch37": {
+      "chrom": "11",
+      "pos": 5248232,
+      "ref": "T",
+      "alt": "A"
+    },
+    "clinical_significance": "Pathogenic"
+  },
+  "dataset": {
+    "bioproject": "PRJNA1117889",
+    "study_accession": "SRP510596",
+    "run_accession": "SRR29275383",
+    "library_name": "SCD10-Mock-2",
+    "organism": "Homo sapiens",
+    "assay_description": "CAST-seq on HBB of Human: in vitro HSPC Hbs Mock",
+    "layout": "paired-end",
+    "fastq_r1": "https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR292/083/SRR29275383/SRR29275383_1.fastq.gz",
+    "fastq_r2": "https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR292/083/SRR29275383/SRR29275383_2.fastq.gz"
+  },
+  "analysis": {
+    "platform": "Galaxy (usegalaxy.org)",
+    "reference": "GRCh38/hg38",
+    "qc": [
+      "FastQC",
+      "MultiQC"
+    ],
+    "cleaning": "fastp (paired-end; adapter detection; quality filtering)",
+    "alignment": "BWA-MEM/BWA-MEM2 to GRCh38",
+    "alignment_qc": [
+      "Samtools flagstat",
+      "optional coverage/IGV"
+    ],
+    "variant_calling": "FreeBayes or bcftools mpileup+call",
+    "annotation": "Ensembl VEP (GRCh38)"
+  }
+}
